@@ -19,8 +19,7 @@
 export default {
   data () {
     return {
-      username: '',
-      password: '',
+      isLogout : false,
       ruleForm: {
         username: '',
         password: ''
@@ -31,11 +30,20 @@ export default {
       }
     }
   },
+  created(){
+    this.isLogout = this.$route.params.isLogout;
+    if(this.isLogout){
+      this.$message('退出成功')
+    }
+  },
   methods: {
     subForm (loginForm) {
       this.$refs[loginForm].validate((val) => {
         if (val) {
-          alert('submit!')
+          this.$router.push({
+            name : 'Manage',
+            params : { isLogin : true }
+          });
         }
       })
     }
