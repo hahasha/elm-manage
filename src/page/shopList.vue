@@ -2,8 +2,8 @@
   <div class="fillcontain">
     <Header></Header>
     <div class="table-container">
-      <el-table :data="tableData">
-        <el-table-column type="expand">
+      <el-table :data="tableData" :header-cell-style="headerCellStyle">
+        <el-table-column type="expand" width="50px">
           <template slot-scope="props">
             <el-form inline class="table-expand">
               <el-form-item label="店铺名称">
@@ -33,9 +33,9 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="店铺名称" prop="name"></el-table-column>
-        <el-table-column label="店铺地址" prop="address"></el-table-column>
-        <el-table-column label="店铺介绍" prop="desc"></el-table-column>
+        <el-table-column label="店铺名称" prop="name" width="330px"></el-table-column>
+        <el-table-column label="店铺地址" prop="address" width="330px"></el-table-column>
+        <el-table-column label="店铺介绍" prop="desc" width="330px"></el-table-column>
         <el-table-column label="操作"></el-table-column>
       </el-table>
     </div>
@@ -71,6 +71,22 @@ export default {
       ]
     };
   },
+  methods: {
+    headerCellStyle() {
+      return "background: #eef1f6;";
+    },
+    tableCellStyle({ columnIndex }) {
+      if (columnIndex == 0) {
+        return {
+          borderLeft: "1px solid #ebeef5"
+        };
+      } else if (columnIndex == 4) {
+        return {
+          borderRight: "1px solid #ebeef5"
+        };
+      }
+    }
+  },
   components: {
     Header
   }
@@ -80,5 +96,18 @@ export default {
 <style lang="less" scoped>
 .table-container {
   padding: 20px;
+  /deep/ .el-table {
+    border: 1px solid #ebeef5;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  /deep/ .el-table--fit {
+    border-bottom: 0;
+  }
+  // /deep/ .el-table__body-wrapper,
+  // .el-table__footer-wrapper,
+  // .el-table__header-wrapper {
+  //   width: 100%;
+  // }
 }
 </style>
