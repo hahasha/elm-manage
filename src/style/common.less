@@ -12,9 +12,12 @@
     }
 }
 
-body{
+html,body,.fillcontain {
     width: 100%;
     height: 100%;
+}
+
+body{
     background: @color;
 }
 input{
@@ -31,6 +34,7 @@ button{
 .el-row{
     height: 100%;
 }
+
 .el-col{
     height: 100%;
 }
@@ -54,4 +58,28 @@ button{
 .menu .el-menu-item.is-active {
     color: #20a0ff;
     background: #1f2d3d;
+}
+
+// 面包屑
+.el-breadcrumb__item:last-child .el-breadcrumb__inner{
+    color: #97a8be;
+}
+.el-breadcrumb__item:last-child .el-breadcrumb__inner:hover{
+    color: #97a8be;
+}
+.el-breadcrumb__inner a, .el-breadcrumb__inner.is-link{
+    font-weight: 400;
+    color: #606266;
+}
+
+// table展开样式
+.el-table, .el-table__expanded-cell{
+    background: #fbfdff;
+}
+.el-table, .el-table__expanded-cell:hover{
+    background: #fbfdff!important;
+}
+.table-expand .el-form-item{
+    width: 50%;
+    margin-right: 0;
 }

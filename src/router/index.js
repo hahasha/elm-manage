@@ -3,10 +3,11 @@ import VueRouter from 'vue-router'
 import Login from '@/page/login'
 import Manage from '@/page/manage'
 import UserList from '@/page/userList'
-import SellerList from '@/page/sellerList'
+import shopList from '@/page/shopList'
 import FoodList from '@/page/foodList'
 import OrderList from '@/page/orderList'
 import AdminList from '@/page/adminList'
+import Home from '@/page/home'
 
 Vue.use(VueRouter)
 
@@ -19,33 +20,46 @@ const routes = [
   {
     path: '/manage',
     name: 'Manage',
-    component: Manage
+    component: Manage,
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: Home,
+        meta: []
+      },
+      {
+        path: '/userList',
+        name: 'UserList',
+        component: UserList,
+        meta: ['数据管理','用户列表']
+      },
+      {
+        path: '/shopList',
+        name: 'shopList',
+        component: shopList,
+        meta: ['数据管理','商家列表']
+      },
+      {
+        path: '/foodList',
+        name: 'FoodList',
+        component: FoodList,
+        meta: ['数据管理','食品列表']
+      },
+      {
+        path: '/orderList',
+        name: 'OrderList',
+        component: OrderList,
+        meta: ['数据管理','订单列表']
+      },
+      {
+        path: '/adminList',
+        name: 'AdminList',
+        component: AdminList,
+        meta: ['数据管理','管理员列表']
+      }
+    ]
   },
-  {
-    path: '/manage/userList',
-    name: 'UserList',
-    component: UserList
-  },
-  {
-    path: '/manage/sellerList',
-    name: 'SellerList',
-    component: SellerList
-  },
-  {
-    path: '/manage/foodList',
-    name: 'FoodList',
-    component: FoodList
-  },
-  {
-    path: '/manage/orderList',
-    name: 'OrderList',
-    component: OrderList
-  },
-  {
-    path: '/manage/adminList',
-    name: 'AdminList',
-    component: AdminList
-  }
 ]
 
 const router = new VueRouter({
