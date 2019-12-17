@@ -33,9 +33,9 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="店铺名称" prop="name" width="430px"></el-table-column>
-        <el-table-column label="店铺地址" prop="address" width="430px"></el-table-column>
-        <el-table-column label="店铺介绍" prop="desc" width="430px"></el-table-column>
+        <el-table-column label="店铺名称" prop="name"></el-table-column>
+        <el-table-column label="店铺地址" prop="address"></el-table-column>
+        <el-table-column label="店铺介绍" prop="desc"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index,scope.row)">编辑</el-button>
