@@ -2,11 +2,7 @@
   <div class="fillcontain">
     <Header></Header>
     <div class="table-container">
-      <el-table
-        :data="tableData"
-        :header-cell-style="tableHeaderStyle"
-        :cell-style="tableCellStyle"
-      >
+      <el-table :data="tableData" :header-cell-style="tableHeaderStyle">
         <el-table-column type="index" label="#" width="116px"></el-table-column>
         <el-table-column prop="date" label="注册日期" width="216px"></el-table-column>
         <el-table-column prop="name" label="用户姓名" width="216px"></el-table-column>
@@ -131,17 +127,6 @@ export default {
         background: "#eef1f6"
       };
     },
-    tableCellStyle({ columnIndex }) {
-      if (columnIndex == 0) {
-        return {
-          borderLeft: "1px solid #ebeef5"
-        };
-      } else if (columnIndex == 3) {
-        return {
-          borderRight: "1px solid #ebeef5"
-        };
-      }
-    },
     initData() {
       const datas = this.pageData[this.currentPage - 1].data;
       this.tableData = datas;
@@ -150,8 +135,8 @@ export default {
       console.log(`每页${val}条`);
     },
     handleCurrentChange(val) {
-        this.currentPage = val;
-        this.initData();
+      this.currentPage = val;
+      this.initData();
     }
   },
   components: {
@@ -163,6 +148,12 @@ export default {
 <style lang="less" scoped>
 .table-container {
   padding: 20px;
+  .el-table {
+    border: 1px solid #ebeef5;
+  }
+  .el-table--fit {
+    border-bottom: 0;
+  }
 }
 .page-container {
   padding-left: 40px;
