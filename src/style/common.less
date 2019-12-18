@@ -84,3 +84,26 @@ button{
     width: 50%;
     margin-right: 0;
 }
+
+
+// dialog对话框样式
+.dialog-container {
+    /deep/ .el-dialog__body {
+      padding: 30px 50px;
+    }
+    .el-form-item {
+      display: flex;
+      /deep/ .el-form-item__content {
+        flex: 1;
+      }
+    }
+    .img {
+      width: 120px;
+      height: 120px;
+      border-radius: 6px;
+      border: 1px dashed #ccc;
+    }
+    .img:hover {
+      border: 1px dashed #20a0ff;
+    }
+  }

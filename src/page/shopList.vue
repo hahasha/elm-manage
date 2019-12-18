@@ -40,7 +40,7 @@
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index,scope.row)">编辑</el-button>
             <el-button size="mini" @click="handleAddFood(scope.$index,scope.row)">添加食品</el-button>
-            <el-button size="mini" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.$index,scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -304,32 +304,8 @@ export default {
   .el-button--mini {
     padding: 6px 8px;
   }
-  .el-button--mini:last-child {
-    background: #ff4949;
-    color: #fff;
-  }
   /deep/ .el-form--inline .el-form-item__content {
     vertical-align: middle;
-  }
-}
-.dialog-container {
-  /deep/ .el-dialog__body {
-    padding: 30px 50px;
-  }
-  .el-form-item {
-    display: flex;
-    /deep/ .el-form-item__content {
-      flex: 1;
-    }
-  }
-  .img {
-    width: 120px;
-    height: 120px;
-    border-radius: 6px;
-    border: 1px dashed #ccc;
-  }
-  .img:hover {
-    border: 1px dashed #20a0ff;
   }
 }
 </style>
