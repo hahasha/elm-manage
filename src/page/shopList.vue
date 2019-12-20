@@ -277,7 +277,7 @@ export default {
       console.log(index, row);
     },
     handleDelete(index, row) {
-      this.tableData.splice(index,1);
+      this.tableData.splice(index, 1);
     },
     handleChange(value) {
       console.log(value);
@@ -295,6 +295,12 @@ export default {
 <style lang="less" scoped>
 .table-container {
   padding: 20px;
+  .el-table {
+    border: 1px solid #ebeef5;
+  }
+  .el-table--fit {
+    border-bottom: 0;
+  }
   .el-button--mini {
     padding: 6px 8px;
   }

@@ -34,43 +34,43 @@ const routes = [
         path: '/userList',
         name: 'UserList',
         component: UserList,
-        meta: ['数据管理','用户列表']
+        meta: ['数据管理', '用户列表']
       },
       {
         path: '/shopList',
         name: 'shopList',
         component: shopList,
-        meta: ['数据管理','商家列表']
+        meta: ['数据管理', '商家列表']
       },
       {
         path: '/foodList',
         name: 'FoodList',
         component: FoodList,
-        meta: ['数据管理','食品列表']
+        meta: ['数据管理', '食品列表']
       },
       {
         path: '/orderList',
         name: 'OrderList',
         component: OrderList,
-        meta: ['数据管理','订单列表']
+        meta: ['数据管理', '订单列表']
       },
       {
         path: '/adminList',
         name: 'AdminList',
         component: AdminList,
-        meta: ['数据管理','管理员列表']
+        meta: ['数据管理', '管理员列表']
       },
       {
         path: '/addShop',
         name: 'AddShop',
         component: AddShop,
-        meta: ['添加数据','添加商铺']
+        meta: ['添加数据', '添加商铺']
       },
       {
         path: '/addGoods',
         name: 'AddGoods',
         component: AddGoods,
-        meta: ['添加数据','添加商品']
+        meta: ['添加数据', '添加商品']
       },
     ]
   },
