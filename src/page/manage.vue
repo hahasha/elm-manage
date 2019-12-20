@@ -27,7 +27,7 @@
             <template slot="title">
               <i class="el-icon-star-on"></i>图表
             </template>
-            <el-menu-item index="4-1">用户分布</el-menu-item>
+            <el-menu-item index="userDistribution">用户分布</el-menu-item>
           </el-submenu>
           <el-submenu index="5">
             <template slot="title">
@@ -73,10 +73,11 @@ export default {
 <style lang="less" scoped>
 .menu {
   background: #1f2d3d;
-  height: 100%;
-  overflow-y: hidden;
+  min-height: 100%;
 }
 .content-container {
   background-color: #fff;
+  height: 100%;
+  overflow: auto;
 }
 </style>

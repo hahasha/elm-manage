@@ -15,12 +15,21 @@
 html,body,.fillcontain {
     width: 100%;
     height: 100%;
-    overflow-y: hidden;
 }
 
-body{
-    background: @color;
+// 隐藏滚动条
+::-webkit-scrollbar  
+{  
+    display: none;
+}  
+
+
+input[type="button"], input[type="submit"], input[type="search"], input[type="reset"] {
+    -webkit-appearance: none;
 }
+
+textarea { -webkit-appearance: none;}  
+
 input{
     border: none;
     background: none;

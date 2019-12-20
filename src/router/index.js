@@ -9,6 +9,7 @@ import OrderList from '@/page/orderList'
 import AdminList from '@/page/adminList'
 import AddShop from '@/page/addShop'
 import AddGoods from '@/page/addGoods'
+import UserDistribution from '@/page/userDistribution'
 import Home from '@/page/home'
 
 Vue.use(VueRouter)
@@ -72,6 +73,12 @@ const routes = [
         component: AddGoods,
         meta: ['添加数据', '添加商品']
       },
+      {
+        path: '/userDistribution',
+        name: 'UserDistribution',
+        component: UserDistribution,
+        meta: ['图表','用户分布']
+      }
     ]
   },
 ]
