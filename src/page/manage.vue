@@ -2,8 +2,8 @@
   <div class="fillcontain">
     <el-row>
       <el-col :span="4">
-        <el-menu class="menu" :default-active="defaultActive" router>
-          <el-menu-item index="manage">
+        <el-menu class="menu" :default-active="activeIndex" router>
+          <el-menu-item index="home">
             <i class="el-icon-menu"></i>首页
           </el-menu-item>
           <el-submenu index="2">
@@ -33,19 +33,19 @@
             <template slot="title">
               <i class="el-icon-edit"></i>编辑
             </template>
-            <el-menu-item index="5-1">文本编辑</el-menu-item>
+            <el-menu-item index="textEdit">文本编辑</el-menu-item>
           </el-submenu>
           <el-submenu index="6">
             <template slot="title">
               <i class="el-icon-setting"></i>设置
             </template>
-            <el-menu-item index="6-1">管理员设置</el-menu-item>
+            <el-menu-item index="setting">管理员设置</el-menu-item>
           </el-submenu>
           <el-submenu index="7">
             <template slot="title">
               <i class="el-icon-warning"></i>说明
             </template>
-            <el-menu-item index="7-1">说明</el-menu-item>
+            <el-menu-item index="illustration">说明</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -62,10 +62,10 @@
 import Header from "@/components/header";
 import axios from "axios";
 export default {
-  computed: {
-    defaultActive() {
-      return this.$route.path.replace("/", "");
-    }
+  data() {
+    return {
+      activeIndex: "home"
+    };
   }
 };
 </script>

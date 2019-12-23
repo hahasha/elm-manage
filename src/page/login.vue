@@ -4,12 +4,16 @@
     <div class="login-wrap">
       <el-form :model="ruleForm" :rules="rules" ref="loginForm">
         <el-form-item prop="username">
-            <el-input class="fm-input" placeholder="用户名" v-model="ruleForm.username"></el-input>
+          <el-input class="fm-input" placeholder="用户名" v-model="ruleForm.username"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-            <el-input class="fm-input" placeholder="密码" v-model="ruleForm.password"></el-input>
+          <el-input class="fm-input" placeholder="密码" v-model="ruleForm.password"></el-input>
         </el-form-item>
-        <el-button class="fm-btn" @click="subForm('loginForm')">登录</el-button>
+        <el-button
+          class="fm-btn"
+          @click="subForm('loginForm')"
+          @keyup.enter="subForm('loginForm')"
+        >登录</el-button>
       </el-form>
     </div>
   </div>
@@ -17,38 +21,48 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      isLogout : false,
+      isLogout: false,
       ruleForm: {
-        username: '',
-        password: ''
+        username: "",
+        password: ""
       },
       rules: {
-        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
       }
-    }
+    };
   },
-  created(){
+  created() {
     this.isLogout = this.$route.params.isLogout;
-    if(this.isLogout){
-      this.$message('退出成功')
+    if (this.isLogout) {
+      this.$message("退出成功");
     }
+    console.log(new Date())
   },
   methods: {
-    subForm (loginForm) {
-      this.$refs[loginForm].validate((val) => {
+    saveUserInfo() {
+      const data = {
+        username: this.ruleForm.username,
+        password: this.ruleForm.password,
+        date: new Date()
+      };
+    },
+    subForm(loginForm) {
+      this.$refs[loginForm].validate(val => {
         if (val) {
           this.$router.push({
-            name : 'Manage',
-            params : { isLogin : true }
+            name: "Home",
+            params: { isLogin: true }
           });
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -61,26 +75,26 @@ export default {
   top: 50%;
   transform: translateY(-60%);
   margin: auto;
-  .login-title{
-      font-size: 32px;
-      font-weight: 200;
-      color: #fff;
-      text-align: center;
+  .login-title {
+    font-size: 32px;
+    font-weight: 200;
+    color: #fff;
+    text-align: center;
   }
-  .login-wrap{
-      box-sizing: border-box;
+  .login-wrap {
+    box-sizing: border-box;
+    width: 100%;
+    background: #fff;
+    border-radius: 6px;
+    padding: 27px;
+    margin-top: 56px;
+    .fm-btn {
       width: 100%;
-      background: #fff;
-      border-radius: 6px;
-      padding: 27px;
-      margin-top: 56px;
-      .fm-btn{
-          width: 100%;
-          background: #20a0ff;
-          border-radius: 4px;
-          font-size: 18px;
-          color: #fff;
-      }
+      background: #20a0ff;
+      border-radius: 4px;
+      font-size: 18px;
+      color: #fff;
+    }
   }
 }
 </style>
