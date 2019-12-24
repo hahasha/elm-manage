@@ -5,12 +5,12 @@ Vue.use(Vuex)
 
 const state = {
   userInfo: {
+    id: '',
     username: '',
     password: '',
     registerTime: '',
-    limits: 'admin',
-    id: (Math.random() + 1) * Math.pow(10, 4 - 1),
-    avatorUrl: '../assets/images/avator.jpg'
+    limits: '',
+    avatorUrl: ''
   }
 }
 

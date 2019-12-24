@@ -41,17 +41,21 @@ export default {
     if (this.isLogout) {
       this.$message("退出成功");
     }
-    console.log(new Date())
   },
   methods: {
     saveUserInfo() {
       const data = {
+        id: parseInt((Math.random() + 1) * Math.pow(10, 4 - 1)),
         username: this.ruleForm.username,
         password: this.ruleForm.password,
-        date: new Date()
+        registerTime: (new Date()).toLocaleString(),
+        limits: "admin",
+        avatorUrl: "http://elm.cangdu.org/img/16f132484ce61386.jpg"
       };
+      this.$store.commit("UPDATEUSERINFO", data);
     },
     subForm(loginForm) {
+      this.saveUserInfo();
       this.$refs[loginForm].validate(val => {
         if (val) {
           this.$router.push({
