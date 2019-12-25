@@ -52,7 +52,7 @@ export default {
         limits: "admin",
         avatorUrl: "http://elm.cangdu.org/img/16f132484ce61386.jpg"
       };
-      this.$store.commit("UPDATEUSERINFO", data);
+      // this.$store.commit("UPDATEUSERINFO", data);
     },
     subForm(loginForm) {
       this.saveUserInfo();

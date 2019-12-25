@@ -64,7 +64,7 @@
           <el-form-item label="店铺分类">
             <el-cascader
               :options="cascaderData.options"
-              v-model="dialogData.category"
+              v-model="cascaderData.selectedOption"
               @change="handleChange"
             ></el-cascader>
           </el-form-item>
@@ -139,51 +139,52 @@ export default {
       dialogData: {},
       cascaderData: {
         value: [],
+        selectedOption: ['2','2-1'],
         options: [
           {
-            value: "ygll",
+            value: "1",
             label: "异国料理",
             children: [
               {
-                value: "rhll",
+                value: "1-1",
                 label: "日韩料理"
               },
               {
-                value: "xc",
+                value: "1-2",
                 label: "西餐"
               },
               {
-                value: "psym",
+                value: "1-3",
                 label: "披萨意面"
               },
               {
-                value: "dnyc",
+                value: "1-4",
                 label: "东南亚菜"
               }
             ]
           },
           {
-            value: "kcbd",
+            value: "2",
             label: "快餐便当",
             children: [
               {
-                value: "jc",
+                value: "2-1",
                 label: "简餐"
               },
               {
-                value: "gjf",
+                value: "2-2",
                 label: "盖浇饭"
               },
               {
-                value: "mfmg",
+                value: "2-3",
                 label: "米粉面馆"
               },
               {
-                value: "bzzd",
+                value: "2-4",
                 label: "包子粥店"
               },
               {
-                value: "mlt",
+                value: "2-5",
                 label: "麻辣烫"
               }
             ]

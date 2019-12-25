@@ -64,8 +64,13 @@ import axios from "axios";
 export default {
   data() {
     return {
-      activeIndex: "home"
+      activeIndex: 'home'
     };
+  },
+  computed: {
+    // activeIndex() {
+    //   return this.$router.replace("home");
+    // }
   }
 };
 </script>
