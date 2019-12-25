@@ -360,7 +360,7 @@ export default {
   .sw-wrap span {
     color: #606266;
     display: inline-block;
-    width: 7%;
+    width: 9%;
   }
   .el-switch {
     margin-right: 10px;
