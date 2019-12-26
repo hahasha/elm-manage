@@ -7,7 +7,7 @@
           <el-input class="fm-input" placeholder="用户名" v-model="ruleForm.username"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input class="fm-input" placeholder="密码" v-model="ruleForm.password"></el-input>
+          <el-input class="fm-input" type="password" placeholder="密码" v-model="ruleForm.password"></el-input>
         </el-form-item>
         <el-button
           class="fm-btn"
