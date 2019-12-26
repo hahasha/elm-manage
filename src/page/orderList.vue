@@ -2,7 +2,13 @@
   <div class="fillcontain">
     <Header></Header>
     <div class="table-container">
-      <el-table :data="tableData" :header-cell-style="headerCellStyle">
+      <el-table
+        :data="tableData"
+        :header-cell-style="headerCellStyle"
+        @expand-change="expandChange"
+        :expand-row-keys="expandedRows"
+        :row-key="row => row.index"
+      >
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form class="table-expand" inline>
@@ -60,7 +66,7 @@ export default {
       limit: 20,
       orderCount: 0,
       currentPage: 1,
-      shopId: null
+      expandedRows: []
     };
   },
   created() {
@@ -84,8 +90,8 @@ export default {
         offset: this.offset,
         limit: this.limit
       });
+      this.tableData = [];
       orders.forEach((item, index) => {
-        this.getExpandData(item, index);
         const orderInfo = {};
         orderInfo.index = index;
         orderInfo.orderId = item.id;
@@ -93,21 +99,31 @@ export default {
         orderInfo.status = item.status_bar.title;
         orderInfo.shopName = item.restaurant_name;
         orderInfo.shopId = item.restaurant_id;
+        orderInfo.userId = item.user_id;
+        orderInfo.addressId = item.address_id;
+        orderInfo.isExpanded = false;
         this.tableData.push(orderInfo);
       });
     },
-    async getExpandData(item, index) {
-      const shopInfo = await getShopDetail(item.restaurant_id);
-      const userInfo = await getUserInfo(item.user_id);
-      const addressInfo = await getAddressById(item.address_id);
-      this.tableData.splice(index, 1, {
-        ...this.tableData[index],
-        ...{
-          shopAddress: shopInfo.address,
-          address: addressInfo.address,
-          userName: userInfo.username
-        }
-      });
+    async expandChange(row) {
+      row.isExpanded = !row.isExpanded;
+      if (row.isExpanded) {
+        const userInfo = await getUserInfo(row.userId);
+        const shopInfo = await getShopDetail(row.shopId);
+        const addressInfo = await getAddressById(row.addressId);
+        this.tableData.splice(row.index, 1, {
+          ...row,
+          ...{
+            userName: userInfo.username,
+            address: addressInfo.address,
+            shopAddress: shopInfo.address
+          }
+        });
+        this.expandedRows.push(row.index);
+      } else {
+        const index = this.expandedRows.indexOf(row.index);
+        this.expandedRows.splice(index, 1);
+      }
     },
     getCount() {
       getOrderCount().then(res => {
