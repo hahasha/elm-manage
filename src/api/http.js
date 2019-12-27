@@ -2,7 +2,7 @@ import axios from 'axios'
 import QS from 'qs'
 
 const baseUrl = '//elm.cangdu.org'
-// const baseImgUrl = '//elm.cangdu.org/img'
+const baseImgUrl = '//elm.cangdu.org/img/'
 
 // 环境的切换
 if (process.env.NODE_ENV == 'development') {    
@@ -49,3 +49,7 @@ export function post(url, params) {
     });
 }
 
+export {
+    baseImgUrl,
+    baseUrl
+}

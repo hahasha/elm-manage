@@ -2,7 +2,13 @@
   <div class="fillcontain">
     <Header></Header>
     <div class="table-container">
-      <el-table :data="tableData" :header-cell-style="headerCellStyle">
+      <el-table
+        :data="tableData"
+        :header-cell-style="headerCellStyle"
+        @expand-change="expandChange"
+        :expand-row-keys="expandedRows"
+        :row-key="row => row.index"
+      >
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form inline class="table-expand">
@@ -22,13 +28,13 @@
                 <span>{{props.row.desc}}</span>
               </el-form-item>
               <el-form-item label="店铺地址">
-                <span>{{props.row.address}}</span>
+                <span>{{props.row.shopAddress}}</span>
               </el-form-item>
               <el-form-item label="评分">
-                <span>{{props.row.score}}</span>
+                <span>{{props.row.rating}}</span>
               </el-form-item>
               <el-form-item label="食品分类">
-                <span>{{props.row.category}}</span>
+                <span>{{props.row.categoryName}}</span>
               </el-form-item>
               <el-form-item label="月销量">
                 <span>{{props.row.sales}}</span>
@@ -40,7 +46,7 @@
         <el-table-column label="食品介绍" prop="desc"></el-table-column>
         <el-table-column label="食品评分">
           <template slot-scope="props">
-            <el-rate v-model="props.row.score" disabled show-score text-color="#ff9900"></el-rate>
+            <el-rate v-model="props.row.rating" disabled show-score text-color="#ff9900"></el-rate>
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -50,6 +56,17 @@
           </template>
         </el-table-column>
       </el-table>
+    </div>
+    <div class="pagination-wrap">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :page-sizes="[20, 30, 50, 100]"
+        :page-size="20"
+        :current-page="currentPage"
+        :total="foodCount"
+        layout="total, sizes, prev, pager, next"
+      ></el-pagination>
     </div>
     <div class="dialog-container dialog-foodInfo">
       <el-dialog title="修改食品信息" :visible.sync="diaFoodVisible">
@@ -61,7 +78,7 @@
             <el-input v-model="diaFoodData.desc"></el-input>
           </el-form-item>
           <el-form-item label="食品分类">
-            <el-select placeholder="热销榜" v-model="selectData.value">
+            <el-select v-model="selectData.value">
               <el-option
                 v-for="item in selectData.options"
                 :key="item.value"
@@ -71,14 +88,14 @@
             </el-select>
           </el-form-item>
           <el-form-item label="食品图片">
-            <el-upload action="baseUrl + '/v1/addimg/shop'" :show-file-list="false">
-              <img :src="imageUrl" v-if="imageUrl" class="img" />
+            <el-upload action :show-file-list="false">
+              <img :src="baseImgUrl + diaFoodData.imgUrl" v-if="diaFoodData.imgUrl" class="img" />
               <i v-else class="el-icon-plus"></i>
             </el-upload>
           </el-form-item>
           <el-form-item>
-            <el-table :data="[diaFoodData.specs]" :header-cell-style="headerCellStyle">
-              <el-table-column label="规格" prop="spec"></el-table-column>
+            <el-table :data="specs" :header-cell-style="headerCellStyle">
+              <el-table-column label="规格" prop="specName"></el-table-column>
               <el-table-column label="包装费" prop="packingCharge"></el-table-column>
               <el-table-column label="价格" prop="price"></el-table-column>
               <el-table-column label="操作">
@@ -96,134 +113,160 @@
         </div>
       </el-dialog>
     </div>
-    <div class="dialog-container dialog-addSpec">
+    <!-- <div class="dialog-container dialog-addSpec">
       <el-dialog title="添加规格" :visible.sync="diaAddSpecVisible">
         <el-form class="add-spec-form" label-width="80px">
           <el-form-item label="规格">
-              <el-input></el-input>
+            <el-input></el-input>
           </el-form-item>
           <el-form-item label="包装费">
-              <el-input-number :min="1" :max="20" controls-position="right" v-model="num"></el-input-number>
+            <el-input-number :min="1" :max="20" controls-position="right" v-model="num"></el-input-number>
           </el-form-item>
           <el-form-item label="价格">
-              <el-input-number :min="20" controls-position="right" v-model="price"></el-input-number>
+            <el-input-number :min="20" controls-position="right" v-model="price"></el-input-number>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="diaAddSpecVisible = false">取消</el-button>
-            <el-button @click="diaAddSpecVisible = false" type="primary">确定</el-button>
+          <el-button @click="diaAddSpecVisible = false">取消</el-button>
+          <el-button @click="diaAddSpecVisible = false" type="primary">确定</el-button>
         </div>
       </el-dialog>
-    </div>
+    </div>-->
   </div>
 </template>
 
 <script>
 import Header from "@/components/header";
+import { baseUrl, baseImgUrl} from '@/api/http'
+import {
+  getFoodList,
+  getFoodCount,
+  getShopDetail,
+  getFoodCategory,
+  getFoodInfoById
+} from "@/api/api";
 export default {
   data() {
     return {
-      tableData: [
-        {
-          id: 5991,
-          name: "海陆双拼减脂沙拉",
-          shopName: "超能鹿战队",
-          shopId: 991,
-          address: "北京市朝阳区创远路朝来科技园3号院3号楼",
-          desc: "荷兰优质淡奶，奶香浓而不腻",
-          score: 5,
-          category: "热销榜",
-          sales: 1590,
-          specs: {
-            spec: "默认",
-            packingCharge: 5,
-            price: 19.9
-          }
-        },
-        {
-          id: 5992,
-          name: "超能小牛肉沙拉",
-          shopName: "超能鹿战队",
-          shopId: 991,
-          address: "北京市朝阳区创远路朝来科技园3号院3号楼",
-          desc: "荷兰优质淡奶，奶香浓而不腻",
-          score: 3.5,
-          category: "热销榜",
-          sales: 1590,
-          specs: {
-            spec: "默认",
-            packingCharge: 5,
-            price: 19.9
-          }
-        },
-        {
-          id: 5991,
-          name: "海陆双拼减脂沙拉",
-          shopName: "超能鹿战队",
-          shopId: 991,
-          address: "北京市朝阳区创远路朝来科技园3号院3号楼",
-          desc: "荷兰优质淡奶，奶香浓而不腻",
-          score: 5,
-          category: "热销榜",
-          sales: 1590,
-          specs: {
-            spec: "默认",
-            packingCharge: 5,
-            price: 19.9
-          }
-        },
-        {
-          id: 5992,
-          name: "超能小牛肉沙拉",
-          shopName: "超能鹿战队",
-          shopId: 991,
-          address: "北京市朝阳区创远路朝来科技园3号院3号楼",
-          desc: "荷兰优质淡奶，奶香浓而不腻",
-          score: 3.5,
-          category: "热销榜",
-          sales: 1590,
-          specs: {
-            spec: "默认",
-            packingCharge: 5,
-            price: 19.9
-          }
-        }
-      ],
+      baseUrl,
+      baseImgUrl,
+      tableData: [],
+      foodCount: 0,
+      expandedRows: [],
+      currentPage: 1,
+      offset: 0,
+      limit: 20,
       diaFoodVisible: false,
       diaAddSpecVisible: false,
       diaFoodData: {},
       selectData: {
-        value: "",
-        options: [
-          {
-            value: "hot1",
-            lable: "热销榜1"
-          },
-          {
-            value: "hot2",
-            lable: "热销榜2"
-          },
-          {
-            value: "hot3",
-            lable: "热销榜3"
-          }
-        ]
+        value:'',
+        options: []
       },
-      imageUrl: "http://elm.cangdu.org/img/16f132484ce61386.jpg",
-      num: 1,
-      price: 20
+      specs: [{
+        specName: '',
+        packingCharge: 0,
+        price: 0
+      }]
     };
   },
+  created() {
+    this.initData();
+  },
   methods: {
-    headerCellStyle() {
-      return "background: #eef1f6";
+    async initData() {
+      const res = await getFoodCount();
+      if (res.status == 1) {
+        this.foodCount = res.count;
+        this.getFoods();
+      } else {
+        throw new Error(res.message);
+      }
+    },
+    async getFoods() {
+      const foods = await getFoodList({
+        offset: this.offset,
+        limit: this.limit
+      });
+      this.tableData = [];
+      foods.forEach((item, index) => {
+        const foodInfo = {};
+        foodInfo.index = index;
+        foodInfo.id = item.item_id;
+        foodInfo.name = item.name;
+        foodInfo.desc = item.description;
+        foodInfo.rating = item.rating;
+        foodInfo.sales = item.month_sales;
+        foodInfo.imgUrl = item.image_path;
+        foodInfo.specs = item.specfoods;
+        foodInfo.shopId = item.restaurant_id;
+        foodInfo.categoryId = item.category_id;
+        foodInfo.isExpand = false;
+        this.tableData.push(foodInfo);
+      });
+    },
+    async expandChange(row) {
+      row.isExpand = !row.isExpand;
+      // 如果expand-change结果为展开
+      if (row.isExpand) {
+        const shopInfo = await getShopDetail(row.shopId);
+        const category = await getFoodCategory(row.categoryId);
+        this.tableData.splice(row.index, 1, {
+          ...row,
+          ...{
+            shopName: shopInfo.name,
+            shopAddress: shopInfo.address,
+            categoryName: category.name
+          }
+        });
+        this.expandedRows.push(row.index);
+      } else {
+        const index = this.expandedRows.indexOf(row.index);
+        this.expandedRows.splice(index, 1);
+      }
+    },
+    handleSizeChange(val) {
+      this.limit = val;
+      this.getFoods();
+    },
+    handleCurrentChange(val) {
+      this.offset = (val - 1) * this.limit
+      this.getFoods();
     },
     handleEdit(index, row) {
       this.diaFoodVisible = true;
-      this.diaFoodData = this.tableData[index];
+      this.diaFoodData = row;
+      this.setCategoryOption(row);
+      this.setSpecData(row);
+    },
+    async setCategoryOption(row){
+      const cateDatas = await getFoodInfoById(row.shopId)  //根据店铺ID获取当前店铺的食品信息
+      this.selectData.options = []
+      cateDatas.forEach((item,index) => {
+        const option = {}
+        option.value = item.id
+        option.lable = item.name
+        if(item.id == row.categoryId){
+          this.selectData.value = item.name  //设置食品分类列表的当前选中项
+        }
+        this.selectData.options.push(option)  
+      })
+    },
+    setSpecData(row){
+      this.specs = [];
+      row.specs.forEach((item) => {
+        const spec = {}
+        spec.specName = item.specs_name
+        spec.packingCharge = item.packing_fee
+        spec.price = item.price
+        this.specs.push(spec)
+      })
     },
     handleDel(index, row) {
       this.tableData.splice(index, 1);
+    },
+    headerCellStyle() {
+      return "background: #eef1f6";
     }
   },
   components: {
@@ -245,6 +288,9 @@ export default {
   padding: 20px;
   .tableborder;
 }
+.pagination-wrap {
+  margin: 0 0 50px 20px;
+}
 .dialog-container {
   .tableborder;
   /deep/ .el-table td {
@@ -257,9 +303,9 @@ export default {
     text-align: center;
   }
   .add-spec-form {
-      /deep/ .el-form-item__content {
-          margin: 0!important;
-      }
+    /deep/ .el-form-item__content {
+      margin: 0 !important;
+    }
   }
 }
 </style>
