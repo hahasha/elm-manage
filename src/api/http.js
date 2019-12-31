@@ -1,8 +1,8 @@
 import axios from 'axios'
 import QS from 'qs'
 
-const baseUrl = '//elm.cangdu.org'
-const baseImgUrl = '//elm.cangdu.org/img/'
+const baseUrl = 'https://elm.cangdu.org'
+const baseImgUrl = 'https://elm.cangdu.org/img/'
 
 // 环境的切换
 if (process.env.NODE_ENV == 'development') {    

@@ -34,3 +34,6 @@ export const getFoodInfoById = shop_id => get('/shopping/v2/menu?restaurant_id='
 
 // 获取食品种类详情
 export const getFoodCategory = category_id => get('/shopping/v2/menu/'+ category_id);
+
+// 更新食品信息
+export const updateFoodInfo = params => post('/shopping/v2/updatefood', params);

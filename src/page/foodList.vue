@@ -88,7 +88,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="食品图片">
-            <el-upload action :show-file-list="false">
+            <el-upload
+              :action="baseUrl+'/v1/addimg/food'"
+              :show-file-list="false"
+              :before-upload="beforeAvatarUpload"
+              :on-success="handleServiceAvatarScucess"
+            >
               <img :src="baseImgUrl + diaFoodData.imgUrl" v-if="diaFoodData.imgUrl" class="img" />
               <i v-else class="el-icon-plus"></i>
             </el-upload>
@@ -99,7 +104,9 @@
               <el-table-column label="包装费" prop="packingCharge"></el-table-column>
               <el-table-column label="价格" prop="price"></el-table-column>
               <el-table-column label="操作">
-                <el-button type="danger" size="mini">删除</el-button>
+                <template slot-scope="scope">
+                  <el-button type="danger" size="mini" @click="deleteSpec(scope.$index)">删除</el-button>
+                </template>
               </el-table-column>
             </el-table>
           </el-form-item>
@@ -109,41 +116,53 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="diaFoodVisible = false">取消</el-button>
-          <el-button @click="diaFoodVisible = false" type="primary">确定</el-button>
+          <el-button @click="updateFood" type="primary">确定</el-button>
         </div>
       </el-dialog>
     </div>
-    <!-- <div class="dialog-container dialog-addSpec">
+    <div class="dialog-container dialog-addSpec">
       <el-dialog title="添加规格" :visible.sync="diaAddSpecVisible">
-        <el-form class="add-spec-form" label-width="80px">
-          <el-form-item label="规格">
-            <el-input></el-input>
+        <el-form
+          :model="newSpec"
+          class="add-spec-form"
+          label-width="80px"
+          :rules="specRule"
+          ref="addSpecForm"
+        >
+          <el-form-item label="规格" prop="specName">
+            <el-input v-model="newSpec.specName"></el-input>
           </el-form-item>
           <el-form-item label="包装费">
-            <el-input-number :min="1" :max="20" controls-position="right" v-model="num"></el-input-number>
+            <el-input-number
+              :min="1"
+              :max="20"
+              controls-position="right"
+              v-model="newSpec.packingCharge"
+            ></el-input-number>
           </el-form-item>
           <el-form-item label="价格">
-            <el-input-number :min="20" controls-position="right" v-model="price"></el-input-number>
+            <el-input-number :min="20" controls-position="right" v-model="newSpec.price"></el-input-number>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="diaAddSpecVisible = false">取消</el-button>
-          <el-button @click="diaAddSpecVisible = false" type="primary">确定</el-button>
+          <el-button @click="addSpec('addSpecForm')" type="primary">确定</el-button>
         </div>
       </el-dialog>
-    </div>-->
+    </div>
   </div>
 </template>
 
 <script>
 import Header from "@/components/header";
-import { baseUrl, baseImgUrl} from '@/api/http'
+import { baseUrl, baseImgUrl } from "@/api/http";
 import {
   getFoodList,
   getFoodCount,
   getShopDetail,
   getFoodCategory,
-  getFoodInfoById
+  getFoodInfoById,
+  updateFoodInfo
 } from "@/api/api";
 export default {
   data() {
@@ -160,14 +179,26 @@ export default {
       diaAddSpecVisible: false,
       diaFoodData: {},
       selectData: {
-        value:'',
+        value: "",
         options: []
       },
-      specs: [{
-        specName: '',
-        packingCharge: 0,
-        price: 0
-      }]
+      specs: [
+        {
+          specName: "",
+          packingCharge: 0,
+          price: 0
+        }
+      ],
+      newSpec: {
+        specName: "",
+        packingCharge: 2,
+        price: 20
+      },
+      specRule: {
+        specName: [
+          { required: true, message: "请输入规格名称", trigger: "blur" }
+        ]
+      }
     };
   },
   created() {
@@ -230,7 +261,7 @@ export default {
       this.getFoods();
     },
     handleCurrentChange(val) {
-      this.offset = (val - 1) * this.limit
+      this.offset = (val - 1) * this.limit;
       this.getFoods();
     },
     handleEdit(index, row) {
@@ -239,31 +270,85 @@ export default {
       this.setCategoryOption(row);
       this.setSpecData(row);
     },
-    async setCategoryOption(row){
-      const cateDatas = await getFoodInfoById(row.shopId)  //根据店铺ID获取当前店铺的食品信息
-      this.selectData.options = []
-      cateDatas.forEach((item,index) => {
-        const option = {}
-        option.value = item.id
-        option.lable = item.name
-        if(item.id == row.categoryId){
-          this.selectData.value = item.name  //设置食品分类列表的当前选中项
+    async setCategoryOption(row) {
+      const cateDatas = await getFoodInfoById(row.shopId); //根据店铺ID获取当前店铺的食品信息
+      this.selectData.options = [];
+      cateDatas.forEach((item, index) => {
+        const option = {};
+        option.value = item.id;
+        option.lable = item.name;
+        if (item.id == row.categoryId) {
+          this.selectData.value = item.name; //设置食品分类列表的当前选中项
         }
-        this.selectData.options.push(option)  
-      })
+        this.selectData.options.push(option);
+      });
     },
-    setSpecData(row){
+    setSpecData(row) {
       this.specs = [];
-      row.specs.forEach((item) => {
-        const spec = {}
-        spec.specName = item.specs_name
-        spec.packingCharge = item.packing_fee
-        spec.price = item.price
-        this.specs.push(spec)
-      })
+      row.specs.forEach(item => {
+        const spec = {};
+        spec.specName = item.specs_name;
+        spec.packingCharge = item.packing_fee;
+        spec.price = item.price;
+        this.specs.push(spec);
+      });
+    },
+    async updateFood() {
+      this.diaFoodVisible = false;
+      const subData = {
+        new_category_id: this.selectData.value,
+        specs: this.specs
+      };
+      const postData = { ...this.diaFoodData, ...subData };
+      const res = await updateFoodInfo(postData);
+      if (res.status == 1) {
+        this.$message({
+          type: "success",
+          message: "更新食品信息成功"
+        });
+        this.getFoods();
+      } else {
+        console.log(res);
+        this.$message({
+          type: "error",
+          message: res.message
+        });
+      }
     },
     handleDel(index, row) {
       this.tableData.splice(index, 1);
+    },
+    addSpec(addSpecForm) {
+      this.$refs[addSpecForm].validate(valid => {
+        if (valid) {
+          this.specs.push(this.newSpec);
+          this.diaAddSpecVisible = false;
+        } else {
+          return false;
+        }
+      });
+    },
+    beforeAvatarUpload(file) {
+      const isRightType =
+        file.type === "image/jpeg" || file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isRightType) {
+        this.$message.error("上传头像图片只支持jpg格式和png格式");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过2M");
+      }
+      return isRightType && isLt2M;
+    },
+    handleServiceAvatarScucess(res, file) {
+      if (res.status == 1) {
+        this.diaFoodData.imgUrl = res.image_path;
+      } else {
+        this.$message.error("上传图片失败!");
+      }
+    },
+    deleteSpec(index, row) {
+      this.specs.splice(index, 1);
     },
     headerCellStyle() {
       return "background: #eef1f6";
