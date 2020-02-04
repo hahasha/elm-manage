@@ -16,6 +16,11 @@ import Illustration from '@/page/illustration'
 import Home from '@/page/home'
 
 Vue.use(VueRouter)
+// 重写push方法（解决两次push同一个地址报错的情况）
+const orginalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function(location) {
+  return orginalPush.call(this, location).catch(err => err)
+}
 
 const routes = [
   {

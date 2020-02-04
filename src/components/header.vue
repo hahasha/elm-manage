@@ -5,7 +5,7 @@
       <el-breadcrumb-item v-for="(item,index) in $route.meta" :key="index">{{item}}</el-breadcrumb-item>
     </el-breadcrumb>
     <el-dropdown @command="handleCommand">
-      <img class="avator" src="../assets/images/avator.jpg" alt />
+      <img class="avator" :src="baseImgUrl + adminInfo.avator" alt />
       <el-dropdown-menu>
         <el-dropdown-item command="index">首页</el-dropdown-item>
         <el-dropdown-item command="logout">退出</el-dropdown-item>
@@ -15,25 +15,43 @@
 </template>
 
 <script>
+import { logout } from '@/api/api'
+import { baseImgUrl } from '@/api/http'
+import { mapState, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      isLogin: false
+      baseImgUrl
     }
   },
-  created() {
-    this.isLogin = this.$route.params.isLogin;
-    if (this.isLogin) {
-      this.$message("登录成功");
+  created(){
+    if (!this.adminInfo.id) {
+      this.getAdminData()
     }
+  },
+  computed: {
+    ...mapState(['adminInfo'])
   },
   methods: {
+    ...mapActions(['getAdminData']),
     handleCommand(command) {
-      if (command === "logout") {
-        this.$router.push({
-          name: "Login",
-          params: { isLogout: true }
-        });
+      if( command === "index" ) {
+        this.$router.push('/manage/home')
+      } else if (command === "logout") {
+        logout().then((res) => {
+          if(res.status === 1) {
+            this.$message({
+              type: 'success',
+              message: '退出成功'
+            })
+            this.$router.push('/')
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message
+            })
+          }
+        })
       }
     }
   }

@@ -5,23 +5,12 @@ import { getAdminInfo } from '@/api/api'
 Vue.use(Vuex)
 
 const state = {
-  // userInfo: {
-  //   id: '',
-  //   username: '',
-  //   password: '',
-  //   registerTime: '',
-  //   limits: '',
-  //   avatorUrl: ''
-  // }
   adminInfo: {
     avator: 'default.jpg'
   }
 }
 
 const mutations = {
-  // UPDATEUSERINFO(state, data) {
-  //   state.userInfo = data;
-  // }
   saveAdminInfo(state, data) {
     state.adminInfo = data
   }

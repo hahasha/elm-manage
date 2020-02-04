@@ -74,17 +74,15 @@ export default {
   },
   methods: {
     initData() {
-      this.getOrders();
-      this.getCount();
+      getOrderCount().then(res => {
+        if (res.status == 1) {
+          this.orderCount = res.count;
+          this.getOrders();
+        } else {
+          throw new Error(res.message);
+        }
+      })
     },
-    // getOrders() {
-    //   getOrderList({
-    //     offset: this.offset,
-    //     limit: this.limit
-    //   }).then(res => {
-    //     this.tableData = res;
-    //   });
-    // },
     async getOrders() {
       const orders = await getOrderList({
         offset: this.offset,
@@ -124,15 +122,6 @@ export default {
         const index = this.expandedRows.indexOf(row.index);
         this.expandedRows.splice(index, 1);
       }
-    },
-    getCount() {
-      getOrderCount().then(res => {
-        if (res.status == 1) {
-          this.orderCount = res.count;
-        } else {
-          throw new Error(res.message);
-        }
-      });
     },
     handleSizeChange(val) {
       this.limit = val;
